@@ -7,8 +7,7 @@ int main()
 {
   char input[BUFFER_SIZE];
   int bytes_read;
-  int bytes_written;
-
+  
   write(2, "$ ", 2);
   bytes_read = read(0, input, BUFFER_SIZE);
   input[bytes_read - 1] = 0;
