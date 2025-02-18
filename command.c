@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void get_command(Command *command)
+void get_command(struct Command *command)
 {
     char buffer[BUFFER_SIZE];
     int bytes_read;
@@ -19,20 +19,20 @@ void get_command(Command *command)
     //print_tokens(command->argv, &command->argc);
 }
 
-/*
-void run_command(Command *command)
+
+void run_command(struct Command *command)
 {
     int pid;
     int child_status;
 
-    char * const envp[] = { NULL };
+    char * argv[] = {"/bin/echo", "Hello, world!", NULL};
+    char * const envp[] = {NULL};
     pid = fork();
     
     if (pid == 0) 
     {
-        execve(command->argv[0], command->argv, envp);
+        execve(argv[0], argv, envp);
     }
 
     waitpid(pid, &child_status, 0);
 }
-*/

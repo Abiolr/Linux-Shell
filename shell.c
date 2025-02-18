@@ -7,13 +7,13 @@
 #include <stdlib.h>
 
 int main() {
-    Command command;
+    struct Command command;
     
     get_command(&command);
 
     while (my_streq(command.argv[0], "exit") == 0)
     {
-        //run_command(&command);
+        run_command(&command);
         get_command(&command);
     }
 

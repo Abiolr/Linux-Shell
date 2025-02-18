@@ -1,2 +1,3 @@
 #define BUFFER_SIZE 1024
 #define MAX_ARGS 256
+#define MAX_PIPELINE_LEN 2
