@@ -64,7 +64,32 @@ int my_streq(const char *s1, const char *s2)
     return *s1 == *s2; // returns 1 if equal, 0 if not
 }
 
-
+/*
+ * my_strncpy
+ *
+ * Purpose:
+ *   Copies up to `n` characters from the source string to the destination string.
+ *   If the source string is shorter than `n` characters, the remaining space in the destination
+ *   is filled with the null terminator.
+ *
+ * Inputs:
+ *   dest - The destination buffer where the copied string will be stored.
+ *   source - The source string to be copied.
+ *   n - The maximum number of characters to copy, including the null terminator.
+ *
+ * Output:
+ *   char* - Returns the destination buffer (`dest`) after copying.
+ * 
+ * Assumptions:
+ *   - The destination buffer (`dest`) has enough space to hold at least `n` characters.
+ *   - The source string (`source`) is null-terminated.
+ *
+ * Limitations:
+ *   - If `n` is greater than the length of the source string, the destination buffer will be
+ *     null-terminated at the position corresponding to the end of the source string.
+ *   - If `n` is less than or equal to the length of the source string, the destination buffer
+ *     will not be null-terminated beyond the `n` characters copied.
+ */
 char *my_strncpy(char *dest, const char *source, int n)
 {
     int  i;
