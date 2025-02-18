@@ -9,8 +9,8 @@
  * location. The heap size is defined by `HEAP_SIZE` in the global configuration.
  */
 #include <stddef.h>
+
 #include "mylib.h"
-#include "globals.h" 
 
 /*
  * my_alloc
@@ -35,8 +35,10 @@
  *   - The function does not support freeing individual memory blocks; only a full heap reset
  *     is available via `my_free_all`.
  */
-char *my_alloc(unsigned int size) {
-    if (freep + size > heap + HEAP_SIZE) {
+char *my_alloc(unsigned int size)
+{
+    if (freep + size > heap + HEAP_SIZE)
+    {
         return NULL; 
     }
     char *ptr = freep; 
@@ -64,6 +66,7 @@ char *my_alloc(unsigned int size) {
  * Limitations:
  *   - This function does not support freeing individual blocks of memory, it resets the entire heap.
  */
-void my_free_all(void) {
+void my_free_all(void)
+{
     freep = heap; 
 }

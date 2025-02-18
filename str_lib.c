@@ -32,7 +32,8 @@
 int my_strlen(const char *str)
 {
     int length = 0;
-    while (str[length] != '\0') {
+    while (str[length] != '\0')
+    {
         length++;
     }
     return length;
@@ -134,8 +135,14 @@ void tokenizeString(char *str, char tokens[MAX_ARGS][BUFFER_SIZE], unsigned int 
         {
             if (start != str)
             {
-                my_strncpy(tokens[*tokenCount], start, str - start);
-                tokens[*tokenCount][str - start] = '\0';
+                int length = str - start;
+                tokens[*tokenCount] = (char *)my_alloc(length + 1);  // Use my_alloc for memory allocation
+                if (tokens[*tokenCount] == NULL) {
+                    // Handle memory allocation failure
+                    return;
+                }
+                my_strncpy(tokens[*tokenCount], start, length);
+                tokens[*tokenCount][length] = '\0';
                 (*tokenCount)++;
             }
             start = str + 1;
@@ -145,10 +152,18 @@ void tokenizeString(char *str, char tokens[MAX_ARGS][BUFFER_SIZE], unsigned int 
 
     if (start != str)
     {
-        my_strncpy(tokens[*tokenCount], start, str - start);
-        tokens[*tokenCount][str - start] = '\0';
+        int length = str - start;
+        tokens[*tokenCount] = (char *)my_alloc(length + 1);  // Use my_alloc for memory allocation
+        if (tokens[*tokenCount] == NULL) {
+            // Handle memory allocation failure
+            return;
+        }
+        my_strncpy(tokens[*tokenCount], start, length);
+        tokens[*tokenCount][length] = '\0';
         (*tokenCount)++;
     }
+
+    tokens[*tokenCount] = NULL;  // Null-terminate the argv array
 }
 
 /*
