@@ -4,7 +4,6 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 void get_command(struct Command *command)
 {
@@ -16,7 +15,7 @@ void get_command(struct Command *command)
     command->argc = 0;
 
     tokenizeString(buffer, command->argv, &command->argc);
-    //print_tokens(command->argv, &command->argc);
+    print_tokens(command->argv, &command->argc);
 }
 
 
