@@ -2,8 +2,8 @@
 
 #include <stddef.h>
 
-#ifndef MEMLIB_H
-#define MEMLIB_H
+#ifndef MYLIB_H
+#define MYLIB_H
 
 char heap[HEAP_SIZE]; 
 char *freep; 
