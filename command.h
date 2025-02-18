@@ -3,12 +3,13 @@
 #ifndef COMMAND_H
 #define COMMAND_H
 
-typedef struct {
-     char argv[MAX_ARGS][BUFFER_SIZE];     /* an array of pointers to (dyn-alloc'ed) strings */
+struct Command {
+     char argv[MAX_ARGS + 1][BUFFER_SIZE];
      unsigned int argc;
-} Command;
+     int background;              /* 0=foreground, otherwise=background */
+};
 
-void get_command(Command * command);
-void run_command(Command * command);
+void get_command(struct Command * command);
+void run_command(struct Command * command);
 
 #endif
