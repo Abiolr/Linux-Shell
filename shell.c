@@ -3,10 +3,10 @@
 #include "command.h"
 
 #include <unistd.h>
-#include <string.h>
 #include <stdlib.h>
 
-int main() {
+int main()
+{
     struct Command command;
     
     get_command(&command);
