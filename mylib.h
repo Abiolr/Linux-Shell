@@ -1,5 +1,5 @@
-#ifndef MEMLIB_H
-#define MEMLIB_H
+#ifndef MYLIB_H
+#define MYLIB_H
 
 #include "globals.h"
 
