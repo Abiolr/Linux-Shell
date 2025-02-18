@@ -14,7 +14,6 @@
 #include "command.h"
 
 #include <unistd.h>
-#include <stdlib.h>
 
 /*
  * main
@@ -35,12 +34,15 @@ int main()
 {
     struct Command command;
     
-    get_command(&command);
-
-    while (my_streq(command.argv[0], "exit") == 0)
-    {
-        run_command(&command);
+    while (1) {
         get_command(&command);
+        if (command.argc == 0) {
+            continue; // Skip empty commands
+        }
+        if (my_streq(command.argv[0], "exit") == 1) {
+            break; // Exit if command is "exit"
+        }
+        run_command(&command);
     }
 
     return 0;
