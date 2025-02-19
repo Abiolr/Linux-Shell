@@ -10,8 +10,8 @@
  * These functions are designed to support the shell program by handling string-related
  * operations efficiently and safely.
  */
-#include "str_lib.h"
 
+#include "str_lib.h"
 #include <unistd.h>
 
 /*
@@ -124,7 +124,7 @@ char *my_strncpy(char *dest, const char *source, int n)
  * Limitations:
  *   - Only spaces are used as delimiters; other whitespace characters are not handled.
  */
-void tokenizeString(char *str, char tokens[MAX_ARGS][BUFFER_SIZE], unsigned int *tokenCount)
+void tokenizeString(char *str, char * tokens[MAX_ARGS + 1], unsigned int *tokenCount)
 {
     *tokenCount = 0;
     char *start = str;
@@ -136,11 +136,11 @@ void tokenizeString(char *str, char tokens[MAX_ARGS][BUFFER_SIZE], unsigned int 
             if (start != str)
             {
                 int length = str - start;
-                tokens[*tokenCount] = (char *)my_alloc(length + 1);  // Use my_alloc for memory allocation
-                if (tokens[*tokenCount] == NULL) {
-                    // Handle memory allocation failure
+                tokens[*tokenCount] = (char *)my_alloc(length + 1);
+                if (tokens[*tokenCount] == NULL)
+                {
                     return;
-                }
+                }   
                 my_strncpy(tokens[*tokenCount], start, length);
                 tokens[*tokenCount][length] = '\0';
                 (*tokenCount)++;
@@ -153,9 +153,9 @@ void tokenizeString(char *str, char tokens[MAX_ARGS][BUFFER_SIZE], unsigned int 
     if (start != str)
     {
         int length = str - start;
-        tokens[*tokenCount] = (char *)my_alloc(length + 1);  // Use my_alloc for memory allocation
-        if (tokens[*tokenCount] == NULL) {
-            // Handle memory allocation failure
+        tokens[*tokenCount] = (char *)my_alloc(length + 1);
+        if (tokens[*tokenCount] == NULL)
+        {
             return;
         }
         my_strncpy(tokens[*tokenCount], start, length);
@@ -163,7 +163,7 @@ void tokenizeString(char *str, char tokens[MAX_ARGS][BUFFER_SIZE], unsigned int 
         (*tokenCount)++;
     }
 
-    tokens[*tokenCount] = NULL;  // Null-terminate the argv array
+    tokens[*tokenCount] = NULL;
 }
 
 /*
@@ -183,7 +183,7 @@ void tokenizeString(char *str, char tokens[MAX_ARGS][BUFFER_SIZE], unsigned int 
  *   - The `tokens` array contains valid null-terminated strings.
  *   - The `numTokens` pointer is valid and points to a readable memory location.
  */
-void print_tokens(char tokens[MAX_ARGS][BUFFER_SIZE], unsigned int *numTokens)
+void print_tokens(char * tokens[MAX_ARGS + 1], unsigned int *numTokens)
 {
     int i;
     for (i = 0; i < *numTokens; i++)
