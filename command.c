@@ -36,7 +36,14 @@ void get_command(struct Command *command)
         command->background = 1;
         buffer[length-1] = '\0';
     }
-        
+    
+    if (command->argc > MAX_ARGS)
+      {
+	command->argc = 0;
+	write(2, "error: argument count exceeded\n", 31);
+        _exit(0);
+      }
+    
     command->argc = 0;
     my_free_all();
     tokenizeString(buffer, command->argv, &command->argc);
