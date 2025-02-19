@@ -12,7 +12,6 @@
 #include "constants.h"
 #include "str_lib.h"
 #include "command.h"
-
 #include <unistd.h>
 
 /*
@@ -36,11 +35,13 @@ int main()
     
     while (1) {
         get_command(&command);
-        if (command.argc == 0) {
-            continue; // Skip empty commands
+        if (command.argc == 0)
+        {
+            continue;
         }
-        if (my_streq(command.argv[0], "exit") == 1) {
-            break; // Exit if command is "exit"
+        if (my_streq(command.argv[0], "exit") == 1)
+        {
+            break;
         }
         run_command(&command);
     }

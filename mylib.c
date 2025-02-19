@@ -8,8 +8,6 @@
  * The heap is managed using a global pointer that tracks the next available memory
  * location. The heap size is defined by `HEAP_SIZE` in the global configuration.
  */
-#include <stddef.h>
-
 #include "mylib.h"
 
 /*
@@ -39,7 +37,7 @@ char *my_alloc(unsigned int size)
 {
     if (freep + size > heap + HEAP_SIZE)
     {
-        return NULL; 
+        return _NULL; 
     }
     char *ptr = freep; 
     freep += size;     

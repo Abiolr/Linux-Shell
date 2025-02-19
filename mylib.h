@@ -1,6 +1,5 @@
 #include "constants.h"
-
-#include <stddef.h>
+#define _NULL ((void*)0)
 
 #ifndef MYLIB_H
 #define MYLIB_H
