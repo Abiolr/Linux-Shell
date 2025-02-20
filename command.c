@@ -1,7 +1,25 @@
+/*
+ * command.c
+ * This file contains functions related to handling and executing shell commands.
+ * It includes functions to read and parse user input into a command structure,
+ * and to execute the parsed commands using system calls like fork and execve.
+ */
 #include "command.h"
 #include "str_lib.h"
 #include "mylib.h"
 
+/*
+ * get_command
+ * Purpose: Reads a command from the user, parses it, and stores it in a Command structure.
+ * Input:
+ *   - command: A pointer to a Command structure where the parsed command will be stored.
+ * Output:
+ *   - command: The Command structure is populated with the parsed command, including arguments and background flag.
+ * Assumptions/Limitations:
+ *   - Assumes the input buffer is not larger than MAX_COMMAND_LENGTH.
+ *   - Assumes the number of arguments does not exceed MAX_ARGS.
+ *   - Exits the program if the buffer size is exceeded or if no input is read.
+ */
 void get_command(struct Command *command)
 {
     char buffer[MAX_COMMAND_LENGTH];
@@ -49,6 +67,17 @@ void get_command(struct Command *command)
     tokenizeString(buffer, command->argv, &command->argc);
 }
 
+/*
+ * run_command
+ * Purpose: Executes a command stored in a Command structure.
+ * Input:
+ *   - command: A pointer to a Command structure containing the command and its arguments to be executed.
+ 
+ * Assumptions/Limitations:
+ *   - Assumes the command and its arguments are properly formatted.
+ *   - If the command is "/bin/cat", it adds a newline after execution.
+ *   - Exits the child process if the command is not found.
+ */
 void run_command(struct Command *command)
 {
     pid_t pid;
