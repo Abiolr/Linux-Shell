@@ -13,4 +13,9 @@
 /bin/ls -al | /usr/bin/wc -l
 /bin/ls -l | /usr/bin/sort -nk5
 
-/bin/cat <test_input.txt>
+/bin/cat test_input.txt
+/bin/ps aux > output_test.txt
+/bin/cat test_input.txt > output_test.txt
+      /bin/echo >test_input.txt | /bin/cat test_input.txt
+/bin/ls -al | /bin/wc -l > output_test_2.txt
+/bin/cat >test_input.txt | /bin/wc -l >output_test.txt
