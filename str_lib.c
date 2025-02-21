@@ -135,7 +135,7 @@ void tokenizeString(char *str, char * tokens[MAX_ARGS + 1], unsigned int *tokenC
         {
             if (start != str)
             {
-                if (*tokenCount >= MAX_ARGS)  // ✅ Check argument limit
+                if (*tokenCount >= MAX_ARGS)
                 {
                     write(2, "error: argument count exceeded\n", 31);
                     _exit(1);
@@ -158,7 +158,7 @@ void tokenizeString(char *str, char * tokens[MAX_ARGS + 1], unsigned int *tokenC
 
     if (start != str)
     {
-        if (*tokenCount >= MAX_ARGS)  // ✅ Check argument limit again
+        if (*tokenCount >= MAX_ARGS)
         {
             write(2, "error: argument count exceeded\n", 31);
             _exit(1);
