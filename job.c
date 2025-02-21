@@ -1,5 +1,4 @@
 #include "job.h"
-#include <fcntl.h>
 
 void get_job(struct Job *job)
 {
@@ -39,7 +38,7 @@ void get_job(struct Job *job)
 
     num_tokens = 0;
     my_free_all();
-    tokenizeString(buffer, parse_infile, &num_tokens, '<');
+    tokenize_string(buffer, parse_infile, &num_tokens, '<');
 
     if (num_tokens == 2)
     {
@@ -60,7 +59,7 @@ void get_job(struct Job *job)
         _exit(0);
     }
 
-    tokenizeString(buffer, parse_outfile, &num_tokens, '>');
+    tokenize_string(buffer, parse_outfile, &num_tokens, '>');
     if (num_tokens == 2)
     {
         job->outfile_path = parse_outfile[1];
@@ -78,12 +77,12 @@ void get_job(struct Job *job)
     }
     my_strncpy(buffer, parse_outfile[0], my_strlen(parse_outfile[0]));
 
-    tokenizeString(buffer, commands, &num_tokens, '|');
+    tokenize_string(buffer, commands, &num_tokens, '|');
     job->num_stages = num_tokens;
 
     for (int i = 0; i < num_tokens; i++)
     {
-        tokenizeString(commands[i], job->pipeline[i].argv, &job->pipeline[i].argc, ' ');
+        tokenize_string(commands[i], job->pipeline[i].argv, &job->pipeline[i].argc, ' ');
     }
 }
 

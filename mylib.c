@@ -10,9 +10,6 @@
  */
 #include "mylib.h"
 
-char heap[HEAP_SIZE];
-char *freep;
-
 /*
  * my_alloc
  *

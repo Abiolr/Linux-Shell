@@ -11,9 +11,8 @@
 
 #include "constants.h"
 #include "str_lib.h"
-#include "command.h"
+#include "struct.h"
 #include "job.h"
-#include <unistd.h>
 
 /*
  * main

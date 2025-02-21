@@ -9,7 +9,7 @@
 int my_strlen(const char *str);
 char *my_strncpy(char *dest, const char *source, int n);
 int my_streq(const char *s1, const char *s2);
-void tokenizeString(char *str, char * tokens[MAX_ARGS + 1], unsigned int *tokenCount, char delimiter);
+void tokenize_string(char *str, char * tokens[MAX_ARGS + 1], unsigned int *token_count, char delimiter);
 void print_tokens(char * tokens[MAX_ARGS + 1], unsigned int *numTokens);
 
 #endif
