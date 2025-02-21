@@ -9,7 +9,6 @@
  * - Command: Represents a single command with its arguments and execution mode (foreground/background).
  * - Job: Represents a pipeline of commands, including input/output redirection and execution mode.
  */
-
 #include "constants.h"
 
 #ifndef STRUCT_H
@@ -24,8 +23,6 @@
  * - argv: An array of strings representing the command and its arguments.
  *         The last element is NULL to indicate the end of the arguments.
  * - argc: The number of arguments in the argv array (excluding the NULL terminator).
- * - background: Indicates whether the command should run in the background (non-zero) 
- *               or foreground (zero).
  */
 struct Command
 {
