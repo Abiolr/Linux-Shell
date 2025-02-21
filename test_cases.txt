@@ -12,3 +12,5 @@
 /bin/ls | /usr/bin/wc -l
 /bin/ls -al | /usr/bin/wc -l
 /bin/ls -l | /usr/bin/sort -nk5
+
+/bin/cat <test_input.txt>
