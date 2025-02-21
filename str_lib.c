@@ -124,14 +124,14 @@ char *my_strncpy(char *dest, const char *source, int n)
  * Limitations:
  *   - Only spaces are used as delimiters; other whitespace characters are not handled.
  */
-void tokenizeString(char *str, char *tokens[MAX_ARGS + 1], unsigned int *tokenCount)
+void tokenizeString(char *str, char * tokens[MAX_ARGS + 1], unsigned int *tokenCount, char delimiter)
 {
     *tokenCount = 0;
     char *start = str;
 
     while (*str)
     {
-        if (*str == ' ')
+        if (*str == delimiter)
         {
             if (start != str)
             {

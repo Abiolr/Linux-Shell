@@ -22,18 +22,25 @@
  */
 void get_command(struct Command *command)
 {
+    
+    
+    
+    
+    /*
     char buffer[MAX_COMMAND_LENGTH];
     int bytes_read;
     int length;
     command->background = 0;
     write(2, "mysh$ ", 6);
     bytes_read = read(0, buffer, MAX_COMMAND_LENGTH - 1);
-    if (bytes_read == -1)
+    /*if (bytes_read >= MAX_COMMAND_LENGTH - 1)
     {
-        write(2, "error: buffer size exceeded", 28);
-        _exit(0);
-    }
-    else if (bytes_read <= 0)
+        buffer[MAX_COMMAND_LENGTH - 1] = '\0'; // Null-terminate the buffer
+        write(2, "error: buffer size exceeded\n", 29);
+        return; // Exit the function without processing the input further
+    }*/
+/*
+    if (bytes_read <= 0)
     {
         _exit(0);
     }
@@ -64,7 +71,9 @@ void get_command(struct Command *command)
     
     command->argc = 0;
     my_free_all();
-    tokenizeString(buffer, command->argv, &command->argc);
+    tokenizeString(buffer, command->argv, &command->argc, ' ');
+    //print_tokens(command->argv, &command->argc);
+    */
 }
 
 /*

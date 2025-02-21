@@ -12,6 +12,7 @@
 #include "constants.h"
 #include "str_lib.h"
 #include "command.h"
+#include "job.h"
 #include <unistd.h>
 
 /*
@@ -31,20 +32,28 @@
  */
 int main()
 {
-    struct Command command;
-    
+    struct Job job;
+
     while (1) {
-        get_command(&command);
-        if (command.argc == 0)
+        // Get the job from user input
+        get_job(&job);
+
+        // Skip if no command was entered
+        if (job.pipeline[0].argc == 0)
         {
             continue;
         }
-        if (my_streq(command.argv[0], "exit") == 1)
+
+        // Exit the shell if the user enters "exit"
+        if (my_streq(job.pipeline[0].argv[0], "exit") == 1)
         {
             break;
         }
-        run_command(&command);
+
+        // Run the job
+        run_job(&job);
     }
 
     return 0;
 }
+
