@@ -1,6 +1,6 @@
 /bin/ls
 /bin/ls -al
-/bin/cat
+/bin/cat shell.c
 /bin/date
 /bin/echo Hello, world!
 /bin/sleep 10

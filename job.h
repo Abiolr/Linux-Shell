@@ -1,5 +1,7 @@
 #include "constants.h"
 #include "command.h"
+#include "mylib.h"
+#include "str_lib.h"
 
 #ifndef JOB_H
 #define JOB_H
@@ -12,5 +14,8 @@ struct Job
     char *infile_path;           /* NULL for no input redirection      */
     int background;              /* 0=foreground, otherwise=background */
 };
+
+void get_job(struct Job * job);
+void run_job(struct Job * job);
 
 #endif
