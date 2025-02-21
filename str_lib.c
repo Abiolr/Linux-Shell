@@ -12,7 +12,6 @@
  */
 
 #include "str_lib.h"
-#include <unistd.h>
 
 /*
  * my_strlen
@@ -103,7 +102,7 @@ char *my_strncpy(char *dest, const char *source, int n)
 }
 
 /*
- * tokenizeString
+ * tokenize_string
  *
  * Purpose:
  *   Splits a string into tokens based on a specified delimiter and stores them in a 2D array.
@@ -111,24 +110,24 @@ char *my_strncpy(char *dest, const char *source, int n)
  * Inputs:
  *   str - The input string to be tokenized.
  *   tokens - A 2D array where the resulting tokens will be stored.
- *   tokenCount - A pointer to an unsigned integer where the number of tokens will be stored.
+ *   token_count - A pointer to an unsigned integer where the number of tokens will be stored.
  *   delimiter - The character used to split the string into tokens.
  *
  * Output:
- *   void - The tokens are stored in the `tokens` array, and the number of tokens is stored in `tokenCount`.
+ *   void - The tokens are stored in the `tokens` array, and the number of tokens is stored in `token_count`.
  *
  * Assumptions:
  *   - The input string is null-terminated.
  *   - The `tokens` array has enough space to store all tokens (MAX_ARGS x BUFFER_SIZE).
- *   - The `tokenCount` pointer is valid and points to a writable memory location.
+ *   - The `token_count` pointer is valid and points to a writable memory location.
  *
  * Limitations:
  *   - Only the specified delimiter is used; other whitespace characters are not handled.
  *   - The function exits with an error if the number of tokens exceeds MAX_ARGS.
  */
-void tokenizeString(char *str, char * tokens[MAX_ARGS + 1], unsigned int *tokenCount, char delimiter)
+void tokenize_string(char *str, char *tokens[MAX_ARGS + 1], unsigned int *token_count, char delimiter)
 {
-    *tokenCount = 0;
+    *token_count = 0;
     char *start = str;
 
     while (*str)
@@ -137,21 +136,21 @@ void tokenizeString(char *str, char * tokens[MAX_ARGS + 1], unsigned int *tokenC
         {
             if (start != str)
             {
-                if (*tokenCount >= MAX_ARGS)
+                if (*token_count >= MAX_ARGS)
                 {
                     write(2, "error: argument count exceeded\n", 31);
                     _exit(1);
                 }
 
                 int length = str - start;
-                tokens[*tokenCount] = (char *)my_alloc(length + 1);
-                if (tokens[*tokenCount] == NULL)
+                tokens[*token_count] = (char *)my_alloc(length + 1);
+                if (tokens[*token_count] == NULL)
                 {
                     return;
                 }   
-                my_strncpy(tokens[*tokenCount], start, length);
-                tokens[*tokenCount][length] = '\0';
-                (*tokenCount)++;
+                my_strncpy(tokens[*token_count], start, length);
+                tokens[*token_count][length] = '\0';
+                (*token_count)++;
             }
             start = str + 1;
         }
@@ -160,24 +159,24 @@ void tokenizeString(char *str, char * tokens[MAX_ARGS + 1], unsigned int *tokenC
 
     if (start != str)
     {
-        if (*tokenCount >= MAX_ARGS)
+        if (*token_count >= MAX_ARGS)
         {
             write(2, "error: argument count exceeded\n", 31);
             _exit(1);
         }
 
         int length = str - start;
-        tokens[*tokenCount] = (char *)my_alloc(length + 1);
-        if (tokens[*tokenCount] == NULL)
+        tokens[*token_count] = (char *)my_alloc(length + 1);
+        if (tokens[*token_count] == NULL)
         {
             return;
         }
-        my_strncpy(tokens[*tokenCount], start, length);
-        tokens[*tokenCount][length] = '\0';
-        (*tokenCount)++;
+        my_strncpy(tokens[*token_count], start, length);
+        tokens[*token_count][length] = '\0';
+        (*token_count)++;
     }
 
-    tokens[*tokenCount] = NULL;
+    tokens[*token_count] = NULL;
 }
 
 /*
@@ -197,7 +196,7 @@ void tokenizeString(char *str, char * tokens[MAX_ARGS + 1], unsigned int *tokenC
  *   - The `tokens` array contains valid null-terminated strings.
  *   - The `numTokens` pointer is valid and points to a readable memory location.
  */
-void print_tokens(char * tokens[MAX_ARGS + 1], unsigned int *numTokens)
+void print_tokens(char *tokens[MAX_ARGS + 1], unsigned int *numTokens)
 {
     int i;
     for (i = 0; i < *numTokens; i++)
