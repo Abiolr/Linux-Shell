@@ -17,5 +17,6 @@ struct Job
 
 void get_job(struct Job * job);
 void run_job(struct Job * job);
+void get_valid_string(char *str);
 
 #endif
