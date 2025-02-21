@@ -106,12 +106,13 @@ char *my_strncpy(char *dest, const char *source, int n)
  * tokenizeString
  *
  * Purpose:
- *   Splits a string into tokens based on spaces and stores them in a 2D array.
+ *   Splits a string into tokens based on a specified delimiter and stores them in a 2D array.
  *
  * Inputs:
  *   str - The input string to be tokenized.
  *   tokens - A 2D array where the resulting tokens will be stored.
  *   tokenCount - A pointer to an unsigned integer where the number of tokens will be stored.
+ *   delimiter - The character used to split the string into tokens.
  *
  * Output:
  *   void - The tokens are stored in the `tokens` array, and the number of tokens is stored in `tokenCount`.
@@ -122,7 +123,8 @@ char *my_strncpy(char *dest, const char *source, int n)
  *   - The `tokenCount` pointer is valid and points to a writable memory location.
  *
  * Limitations:
- *   - Only spaces are used as delimiters; other whitespace characters are not handled.
+ *   - Only the specified delimiter is used; other whitespace characters are not handled.
+ *   - The function exits with an error if the number of tokens exceeds MAX_ARGS.
  */
 void tokenizeString(char *str, char * tokens[MAX_ARGS + 1], unsigned int *tokenCount, char delimiter)
 {
