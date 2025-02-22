@@ -20,5 +20,6 @@ void handle_redirections(struct Job *job, int i, int *pipefd);
 void close_pipes(int *pipefd, int num_stages);
 void execute_command(struct Job *job, int i);
 void get_valid_string(char *str);
+void handle_internal_command(struct Command *command);
 
 #endif
