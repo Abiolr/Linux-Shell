@@ -12,9 +12,6 @@
 /bin/ls | /usr/bin/wc -l
 /bin/ls -al | /usr/bin/wc -l
 /bin/ls -l | /usr/bin/sort -nk5
-
-/bin/ls
-/bin/ls -al
 /bin/date | /bin/echo Hello, world!
 /bin/ls | /bin/date | /bin/echo Hello, world!
 /bin/cat test_input.txt
@@ -22,3 +19,9 @@
 /bin/cat test_input.txt | /usr/bin/wc -l
 /bin/ls -al | /usr/bin/wc -l > output_test_2.txt
 /bin/cat test_input.txt | /usr/bin/wc -l > output_test.txt
+/bin/echo "This is a test" > test_output.txt
+/bin/ls -l | /usr/bin/grep "test"
+/bin/cat < test_input.txt
+/bin/ls -l | /usr/bin/sort -r
+/bin/sleep 10 &
+/bin/seq 1 10
