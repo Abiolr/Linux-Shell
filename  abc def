@@ -14,6 +14,9 @@ shell
 shell.c
 shell.dSYM
 shell.o
+signal_handle.c
+signal_handle.h
+signal_handle.o
 str_lib.c
 str_lib.h
 str_lib.o
