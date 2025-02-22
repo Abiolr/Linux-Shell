@@ -430,3 +430,45 @@ void get_valid_string(char *str)
         str[i] = '\0';
     }
 }
+
+/*
+ * handle_internal_command
+ *
+ * Purpose:
+ *    Executes internal shell commands like "cd" and "exit".
+ *
+ * Input:
+ *   - command: Pointer to a `Command` structure containing the command and its arguments.
+ *
+ * Behavior:
+ *   - If no arguments are provided, the function returns without doing anything.
+ *   - If the command is `"cd"`:
+ *       - If no argument is given, it prints `"cd: missing argument"`.
+ *       - If an argument is provided, it attempts to change the directory using `chdir()`.
+ *       - If `chdir()` fails, it prints an error message using `perror()`.
+ *   - If the command is `"exit"`:
+ *       - The program terminates with `exit(0)`.
+ *
+ * Assumptions/Limitations:
+ *   - Only supports `"cd"` and `"exit"`.
+ *   - Does not handle advanced `cd` features like `cd -` (previous directory).
+ *   - Relies on `my_streq()` for string comparison.
+ */
+void handle_internal_command(struct Command *command) {
+    if (command->argc == 0) {
+        return; // No command to execute
+    }
+
+    if (my_streq(command->argv[0], "cd")) {
+        // Handle cd command
+        if (command->argc < 2) {
+            write(1, "cd: missing argument\n", 21);
+        } else {
+            if (chdir(command->argv[1]) != 0) {
+                perror("cd");
+            }
+        }
+    } else if (my_streq(command->argv[0], "exit")) {
+        exit(0);
+    }
+}
