@@ -1,10 +1,13 @@
 all: clean shell test_mylib
 
-shell: shell.o str_lib.o job.o mylib.o
-	gcc shell.o str_lib.o job.o mylib.o -o shell
+shell: shell.o str_lib.o job.o mylib.o signal_handle.o
+	gcc shell.o str_lib.o job.o mylib.o signal_handle.o -o shell
 
 shell.o: shell.c str_lib.h constants.h
 	gcc -g -c shell.c
+
+signal_handle.o: signal_handle.c signal_handle.h 
+	gcc -g -c signal_handle.c
 
 str_lib.o: str_lib.c str_lib.h constants.h mylib.h
 	gcc -g -c str_lib.c
