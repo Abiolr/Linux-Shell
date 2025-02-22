@@ -29,7 +29,8 @@
  *   - Assumes the input is well-formed (e.g no more than one input/output redirection).
  *   - Does not handle complex command syntax (e.g nested redirections).
  */
-void get_job(struct Job *job) {
+void get_job(struct Job *job)
+{
     char *parse_infile[MAX_ARGS + 1];
     char *parse_outfile[MAX_ARGS + 1];
     unsigned int num_tokens;
@@ -64,7 +65,7 @@ void get_job(struct Job *job) {
         get_valid_string(job->infile_path);
         my_strncpy(buffer, parse_infile[0], my_strlen(parse_infile[0]));
     }
-    
+
     else if (num_tokens == 1)
     {
         if (parse_infile[0][0] == '<')
@@ -79,6 +80,7 @@ void get_job(struct Job *job) {
             my_strncpy(buffer, parse_infile[0], my_strlen(parse_infile[0]));
         }
     }
+
     else
     {
         write(2, "error: too many infile paths\n", 30);
@@ -86,8 +88,7 @@ void get_job(struct Job *job) {
     }
 
     tokenize_string(buffer, parse_outfile, &num_tokens, '>');
-    if (num_tokens == 2)
-    {
+    if (num_tokens == 2) {
         job->outfile_path = parse_outfile[1];
         get_valid_string(job->outfile_path);
     }
@@ -103,8 +104,16 @@ void get_job(struct Job *job) {
         return;
     }
     my_strncpy(buffer, parse_outfile[0], my_strlen(parse_outfile[0]));
-    
-    parse_commands(buffer, job);
+
+    if (buffer[0] != '\0')
+    {
+        parse_commands(buffer, job);
+    }
+
+    else
+    {
+        job->num_stages = 0;
+    }
 }
 
 /*
@@ -124,6 +133,11 @@ void get_job(struct Job *job) {
  */
 void run_job(struct Job *job)
 {
+    if (job->num_stages == 0)
+    {
+        return;
+    }
+
     int pipefd[2 * (job->num_stages - 1)];
     pid_t pids[job->num_stages];
     int child_status;
@@ -176,34 +190,41 @@ void run_job(struct Job *job)
  *   - Assumes the buffer is large enough to hold the input (MAX_COMMAND_LENGTH - 1).
  *   - Assumes the input is terminated by a newline character.
  */
-void read_input(char *buffer, int *length) {
-    while (1) {
+void read_input(char *buffer, int *length)
+{
+    while (1)
+    {
         write(2, "mysh$ ", 6);
         int bytes_read = read(0, buffer, MAX_COMMAND_LENGTH - 1);
 
-        if (bytes_read == -1) {
-            // If read was interrupted by a signal, restart the loop
-            if (errno == EINTR) {
+        if (bytes_read == -1)
+        {
+            if (errno == EINTR)
+            {
                 continue;
             }
             perror("read");
             _exit(1);
-        } else if (bytes_read == 0) {
+        } 
+        
+        else if (bytes_read == 0)
+        {
             write(2, "\n", 1);
             _exit(0);
         }
 
         buffer[bytes_read] = '\0';
 
-        for (int i = 0; i < bytes_read; i++) {
-            if (buffer[i] == '\n') {
+        for (int i = 0; i < bytes_read; i++)
+        {
+            if (buffer[i] == '\n')
+            {
                 *length = i;
-                buffer[i] = '\0'; // Replace newline with null terminator
+                buffer[i] = '\0';
                 return;
             }
         }
 
-        // If no newline was found, set the length to the full buffer
         *length = bytes_read;
         buffer[bytes_read] = '\0';
         return;
@@ -358,15 +379,16 @@ void close_pipes(int *pipefd, int num_stages)
  *   - Assumes the command is valid and executable.
  *   - Assumes the Job structure has been properly populated.
  */
-void execute_command(struct Job *job, int i) {
-    // Check if the command is an internal command
-    if (my_streq(job->pipeline[i].argv[0], "cd") || my_streq(job->pipeline[i].argv[0], "exit")) {
+void execute_command(struct Job *job, int i)
+{
+    if (my_streq(job->pipeline[i].argv[0], "cd") || my_streq(job->pipeline[i].argv[0], "exit"))
+    {
         handle_internal_command(&job->pipeline[i]);
-        _exit(0); // Exit the child process after handling the internal command
+        _exit(0);
     }
 
-    // If not an internal command, execute it using execve
-    if (execve(job->pipeline[i].argv[0], job->pipeline[i].argv, NULL) == -1) {
+    if (execve(job->pipeline[i].argv[0], job->pipeline[i].argv, NULL) == -1)
+    {
         write(2, "error: command not found: ", 26);
         write(2, job->pipeline[i].argv[0], my_strlen(job->pipeline[i].argv[0]));
         write(2, "\n", 1);
@@ -471,21 +493,30 @@ void get_valid_string(char *str)
  *   - Does not handle advanced `cd` features like `cd -` (previous directory).
  *   - Relies on `my_streq()` for string comparison.
  */
-void handle_internal_command(struct Command *command) {
+void handle_internal_command(struct Command *command)
+{
     if (command->argc == 0) {
-        return; // No command to execute
+        return;
     }
 
-    if (my_streq(command->argv[0], "cd")) {
-        // Handle cd command
-        if (command->argc < 2) {
+    if (my_streq(command->argv[0], "cd"))
+    {
+        if (command->argc < 2)
+        {
             write(1, "cd: missing argument\n", 21);
-        } else {
-            if (chdir(command->argv[1]) != 0) {
+        }
+
+        else
+        {
+            if (chdir(command->argv[1]) != 0)
+            {
                 perror("cd");
             }
         }
-    } else if (my_streq(command->argv[0], "exit")) {
+    }
+
+    else if (my_streq(command->argv[0], "exit"))
+    {
         exit(0);
     }
 }
