@@ -1,5 +1,34 @@
+/*
+ * job.c
+ *
+ * This file contains functions for managing and executing shell jobs.
+ * It includes functions for parsing user input, setting up pipelines, handling
+ * I/O redirections, and executing commands. The main data structure is `struct Job`,
+ * which holds information about the command pipeline, input/output files, and
+ * whether the job should run in the background.
+ */
 #include "job.h"
 
+/*
+ * get_job
+ *
+ * Purpose: 
+ *    Reads input from the user, parses it to determine input/output redirections, 
+ *    background execution, and command pipelines, and stores the results 
+ *    in a Job structure.
+ *
+ * Input:
+ *   - job: Pointer to a Job structure to be populated with parsed information.
+ *
+ * Output:
+ *   - job: The Job structure is filled with parsed command information, including
+ *          input/output file paths, background flag, and command stages.
+ *
+ * Assumptions/Limitations:
+ *   - Assumes the input buffer is no longer than MAX_COMMAND_LENGTH.
+ *   - Assumes the input is well-formed (e.g no more than one input/output redirection).
+ *   - Does not handle complex command syntax (e.g nested redirections).
+ */
 void get_job(struct Job *job) {
     char *parse_infile[MAX_ARGS + 1];
     char *parse_outfile[MAX_ARGS + 1];
@@ -53,6 +82,21 @@ void get_job(struct Job *job) {
     parse_commands(buffer, job);
 }
 
+/*
+ * run_job
+ *
+ * Purpose: 
+ *    Runs the commands in the Job structure, handling I/O redirections 
+ *    and piping between commands.
+ *
+ * Input:
+ *   - job: Pointer to a Job structure containing the command pipeline to execute.
+ *
+ * Assumptions/Limitations:
+ *   - Assumes the Job structure has been properly populated by get_job.
+ *   - Assumes the system has enough resources to fork processes and create pipes.
+ *   - Does not handle errors in command execution gracefully (e.g. missing commands).
+ */
 void run_job(struct Job *job) {
     int pipefd[2 * (job->num_stages - 1)];
     pid_t pids[job->num_stages];
@@ -81,6 +125,24 @@ void run_job(struct Job *job) {
     }
 }
 
+/*
+ * read_input
+ *
+ * Purpose: 
+ *    Reads a line of input from the user and stores it in a buffer.
+ *
+ * Inputs:
+ *   - buffer: Pointer to a buffer where the input will be stored.
+ *   - length: Pointer to an integer where the length of the input will be stored.
+ *
+ * Outputs:
+ *   - buffer: Contains the user input.
+ *   - length: Contains the length of the input (excluding the newline character).
+ *
+ * Assumptions/Limitations:
+ *   - Assumes the buffer is large enough to hold the input (MAX_COMMAND_LENGTH - 1).
+ *   - Assumes the input is terminated by a newline character.
+ */
 void read_input(char *buffer, int *length) {
     while (1) {
         write(2, "mysh$ ", 6);
@@ -115,6 +177,23 @@ void read_input(char *buffer, int *length) {
     }
 }
 
+/*
+ * parse_commands
+ *
+ * Purpose: 
+ *    Splits a command string into individual commands based on the pipe character ('|').
+ *
+ * Inputs:
+ *   - buffer: Pointer to a string containing the command pipeline.
+ *   - job: Pointer to a Job structure where the parsed commands will be stored.
+ *
+ * Output:
+ *   - job: The Job structure is updated with the parsed commands.
+ *
+ * Assumptions/Limitations:
+ *   - Assumes the command string is well-formed (e.g., no empty commands).
+ *   - Assumes the Job structure has enough space to store the parsed commands.
+ */
 void parse_commands(char *buffer, struct Job *job) {
     char *commands[MAX_ARGS + 1];
     unsigned int num_tokens = 0;
@@ -127,6 +206,23 @@ void parse_commands(char *buffer, struct Job *job) {
     }
 }
 
+/*
+ * setup_pipes
+ *
+ * Purpose: 
+ *    Creates pipes for communication between stages in a command pipeline.
+ *
+ * Inputs:
+ *   - pipefd: Array to store the file descriptors for the pipes.
+ *   - num_stages: Number of stages in the command pipeline.
+ *
+ * Output:
+ *   - pipefd: Contains the file descriptors for the created pipes.
+ *
+ * Assumptions/Limitations:
+ *   - Assumes num_stages is greater than 1.
+ *   - Assumes the system has enough resources to create pipes.
+ */
 void setup_pipes(int *pipefd, int num_stages) {
     for (int i = 0; i < num_stages - 1; i++) {
         if (pipe(pipefd + 2 * i) == -1) {
@@ -136,6 +232,21 @@ void setup_pipes(int *pipefd, int num_stages) {
     }
 }
 
+/*
+ * handle_redirections
+ *
+ * Purpose: 
+ *    Sets up input/output redirections for a specific stage in the command pipeline.
+ *
+ * Inputs:
+ *   - job: Pointer to a Job structure containing the command pipeline.
+ *   - i: Index of the current stage in the pipeline.
+ *   - pipefd: Array of file descriptors for the pipes.
+ *
+ * Assumptions/Limitations:
+ *   - Assumes the Job structure has been properly populated.
+ *   - Assumes the pipe file descriptors are valid.
+ */
 void handle_redirections(struct Job *job, int i, int *pipefd) {
     if (i == 0 && job->infile_path) {
         int infile_fd = open(job->infile_path, O_RDONLY);
@@ -165,13 +276,39 @@ void handle_redirections(struct Job *job, int i, int *pipefd) {
     }
 }
 
+/*
+ * close_pipes
+ *
+ * Purpose: 
+ *    Closes all file descriptors associated with the pipes in a command pipeline.
+ *
+ * Input:
+ *   - pipefd: Array of file descriptors for the pipes.
+ *   - num_stages: Number of stages in the command pipeline.
+ *
+ * Assumptions/Limitations:
+ *   - Assumes the pipe file descriptors are valid.
+ */
 void close_pipes(int *pipefd, int num_stages) {
     for (int i = 0; i < 2 * (num_stages - 1); i++) {
         close(pipefd[i]);
     }
 }
 
-
+/*
+ * execute_command
+ *
+ * Purpose: 
+ *    Executes a command in a specific stage of the pipeline.
+ *
+ * Inputs:
+ *   - job: Pointer to a Job structure containing the command pipeline.
+ *   - i: Index of the current stage in the pipeline.
+ *
+ * Assumptions/Limitations:
+ *   - Assumes the command is valid and executable.
+ *   - Assumes the Job structure has been properly populated.
+ */
 void execute_command(struct Job *job, int i) {
     // Check if the command is an internal command
     if (my_streq(job->pipeline[i].argv[0], "cd") || my_streq(job->pipeline[i].argv[0], "exit")) {
@@ -188,6 +325,23 @@ void execute_command(struct Job *job, int i) {
     }
 }
 
+/*
+ * get_valid_string
+ *
+ * Purpose: 
+ *    Removes leading and trailing spaces from a string and ensures 
+ *    it does not contain spaces between letters.
+ *
+ * Input:
+ *   - str: Pointer to the string to be validated and cleaned.
+ *
+ * Output:
+ *   - str: The string is modified in place to remove leading/trailing spaces.
+ *
+ * Assumptions/Limitations:
+ *   - Assumes the string is null-terminated.
+ *   - Does not handle strings with internal spaces (e.g., paths with spaces).
+ */
 void get_valid_string(char *str)
 {
     int i = 0;
@@ -239,6 +393,29 @@ void get_valid_string(char *str)
     }
 }
 
+/*
+ * handle_internal_command
+ *
+ * Purpose:
+ *    Executes internal shell commands like "cd" and "exit".
+ *
+ * Input:
+ *   - command: Pointer to a `Command` structure containing the command and its arguments.
+ *
+ * Behavior:
+ *   - If no arguments are provided, the function returns without doing anything.
+ *   - If the command is `"cd"`:
+ *       - If no argument is given, it prints `"cd: missing argument"`.
+ *       - If an argument is provided, it attempts to change the directory using `chdir()`.
+ *       - If `chdir()` fails, it prints an error message using `perror()`.
+ *   - If the command is `"exit"`:
+ *       - The program terminates with `exit(0)`.
+ *
+ * Assumptions/Limitations:
+ *   - Only supports `"cd"` and `"exit"`.
+ *   - Does not handle advanced `cd` features like `cd -` (previous directory).
+ *   - Relies on `my_streq()` for string comparison.
+ */
 void handle_internal_command(struct Command *command) {
     if (command->argc == 0) {
         return; // No command to execute
