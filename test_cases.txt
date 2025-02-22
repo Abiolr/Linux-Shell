@@ -1,0 +1,24 @@
+/bin/ls
+/bin/ls -al
+/bin/cat shell.c
+/bin/date
+/bin/echo Hello, world!
+/bin/sleep 10
+/bin/ps 
+/bin/ps a
+/bin/ps ux
+/bin/ps u
+/bin/ps aux
+/bin/ls | /usr/bin/wc -l
+/bin/ls -al | /usr/bin/wc -l
+/bin/ls -l | /usr/bin/sort -nk5
+
+/bin/ls
+/bin/ls -al
+/bin/date | /bin/echo Hello, world!
+/bin/ls | /bin/date | /bin/echo Hello, world!
+/bin/cat test_input.txt
+/bin/ps aux > output_test.txt
+/bin/cat test_input.txt | /usr/bin/wc -l
+/bin/ls -al | /usr/bin/wc -l > output_test_2.txt
+/bin/cat test_input.txt | /usr/bin/wc -l > output_test.txt
