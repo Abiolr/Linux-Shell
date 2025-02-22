@@ -12,6 +12,7 @@
 #include "str_lib.h"
 #include "struct.h"
 #include "job.h"
+#include "signal_handle.h"
 
 /*
  * main
@@ -31,6 +32,10 @@
 int main()
 {
     struct Job job;
+
+    struct sigaction sa;
+      
+    signal_handler_setup(&sa);
 
     while (1) {
         // Get the job from user input
