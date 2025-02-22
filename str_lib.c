@@ -10,7 +10,6 @@
  * These functions are designed to support the shell program by handling string-related
  * operations efficiently and safely.
  */
-
 #include "str_lib.h"
 
 /*

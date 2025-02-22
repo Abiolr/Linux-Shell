@@ -1,4 +1,4 @@
-all: clean shell
+all: clean shell test_mylib
 
 shell: shell.o str_lib.o job.o mylib.o signal_handle.o
 	gcc shell.o str_lib.o job.o mylib.o signal_handle.o -o shell
@@ -18,5 +18,11 @@ job.o: job.c job.h struct.h constants.h
 mylib.o: mylib.c mylib.h constants.h
 	gcc -g -c mylib.c
 
+test_mylib: test_mylib.o mylib.o
+	gcc test_mylib.o mylib.o -o test_mylib
+
+test_mylib.o: test_mylib.c mylib.h constants.h
+	gcc -g -c test_mylib.c
+
 clean:
-	-rm -f shell *.o
+	-rm -f shell test_mylib *.o

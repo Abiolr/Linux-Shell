@@ -8,7 +8,6 @@
  * and if not, executes the command using the run_command function. This process
  * repeats until the user inputs the "exit" command.
  */
-
 #include "constants.h"
 #include "str_lib.h"
 #include "struct.h"
