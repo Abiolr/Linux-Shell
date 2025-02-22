@@ -21,12 +21,18 @@ void get_job(struct Job *job) {
     tokenize_string(buffer, parse_infile, &num_tokens, '<');
 
     if (num_tokens == 2) {
-        job->infile_path = parse_infile[0];
+        job->infile_path = parse_infile[1]; // The file path is the second token
         get_valid_string(job->infile_path);
-        my_strncpy(buffer, parse_infile[1], my_strlen(parse_infile[1]));
+        my_strncpy(buffer, parse_infile[0], my_strlen(parse_infile[0])); // Command is the first token
     } else if (num_tokens == 1) {
-        job->infile_path = NULL;
-        my_strncpy(buffer, parse_infile[0], my_strlen(parse_infile[0]));
+        if (parse_infile[0][0] == '<') {
+            job->infile_path = parse_infile[0] + 1; // Skip the '<' character
+            get_valid_string(job->infile_path);
+            buffer[0] = '\0'; // No command
+        } else {
+            job->infile_path = NULL;
+            my_strncpy(buffer, parse_infile[0], my_strlen(parse_infile[0]));
+        }
     } else {
         write(2, "error: too many infile paths\n", 30);
         _exit(0);
@@ -43,7 +49,7 @@ void get_job(struct Job *job) {
         _exit(0);
     }
     my_strncpy(buffer, parse_outfile[0], my_strlen(parse_outfile[0]));
-
+    
     parse_commands(buffer, job);
 }
 
@@ -151,12 +157,13 @@ void close_pipes(int *pipefd, int num_stages) {
 
 void execute_command(struct Job *job, int i) {
     if (execve(job->pipeline[i].argv[0], job->pipeline[i].argv, NULL) == -1) {
-        write(2, "command not found: ", 20);
+        write(2, "error: command not found: ", 26);
         write(2, job->pipeline[i].argv[0], my_strlen(job->pipeline[i].argv[0]));
         write(2, "\n", 1);
-        _exit(1);
+        _exit(1);  
     }
 }
+
 
 void get_valid_string(char *str)
 {
