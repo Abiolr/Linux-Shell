@@ -82,21 +82,37 @@ void run_job(struct Job *job) {
 }
 
 void read_input(char *buffer, int *length) {
-    write(2, "mysh$ ", 6);
-    int bytes_read = read(0, buffer, MAX_COMMAND_LENGTH - 1);
+    while (1) {
+        write(2, "mysh$ ", 6);
+        int bytes_read = read(0, buffer, MAX_COMMAND_LENGTH - 1);
 
-    if (bytes_read <= 0) {
-        _exit(0);
-    }
-
-    *length = bytes_read;
-    for (int i = 0; i < bytes_read; i++) {
-        if (buffer[i] == '\n') {
-            *length = i;
-            break;
+        if (bytes_read == -1) {
+            // If read was interrupted by a signal, restart the loop
+            if (errno == EINTR) {
+                continue;
+            }
+            perror("read");
+            _exit(1);
+        } else if (bytes_read == 0) {
+            write(2, "\n", 1);
+            _exit(0);
         }
+
+        buffer[bytes_read] = '\0';
+
+        for (int i = 0; i < bytes_read; i++) {
+            if (buffer[i] == '\n') {
+                *length = i;
+                buffer[i] = '\0'; // Replace newline with null terminator
+                return;
+            }
+        }
+
+        // If no newline was found, set the length to the full buffer
+        *length = bytes_read;
+        buffer[bytes_read] = '\0';
+        return;
     }
-    buffer[*length] = '\0';
 }
 
 void parse_commands(char *buffer, struct Job *job) {
@@ -155,7 +171,15 @@ void close_pipes(int *pipefd, int num_stages) {
     }
 }
 
+
 void execute_command(struct Job *job, int i) {
+    // Check if the command is an internal command
+    if (my_streq(job->pipeline[i].argv[0], "cd") || my_streq(job->pipeline[i].argv[0], "exit")) {
+        handle_internal_command(&job->pipeline[i]);
+        _exit(0); // Exit the child process after handling the internal command
+    }
+
+    // If not an internal command, execute it using execve
     if (execve(job->pipeline[i].argv[0], job->pipeline[i].argv, NULL) == -1) {
         write(2, "error: command not found: ", 26);
         write(2, job->pipeline[i].argv[0], my_strlen(job->pipeline[i].argv[0]));
@@ -163,7 +187,6 @@ void execute_command(struct Job *job, int i) {
         _exit(1);  
     }
 }
-
 
 void get_valid_string(char *str)
 {
@@ -213,5 +236,24 @@ void get_valid_string(char *str)
             i++;
         }
         str[i] = '\0';
+    }
+}
+
+void handle_internal_command(struct Command *command) {
+    if (command->argc == 0) {
+        return; // No command to execute
+    }
+
+    if (my_streq(command->argv[0], "cd")) {
+        // Handle cd command
+        if (command->argc < 2) {
+            write(1, "cd: missing argument\n", 21);
+        } else {
+            if (chdir(command->argv[1]) != 0) {
+                perror("cd");
+            }
+        }
+    } else if (my_streq(command->argv[0], "exit")) {
+        exit(0);
     }
 }
